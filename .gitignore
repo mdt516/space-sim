@@ -1,0 +1,8 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/space-sim.slnx
+/vcpkg_installed
+/space-sim/x64/Debug
+/x64/Debug
