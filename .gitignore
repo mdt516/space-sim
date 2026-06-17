@@ -6,3 +6,6 @@
 /vcpkg_installed
 /space-sim/x64/Debug
 /x64/Debug
+/space-sim.vcxproj
+/.vs/space-sim/CopilotIndices/18.7.1225.11805
+/space-sim.vcxproj.filters
