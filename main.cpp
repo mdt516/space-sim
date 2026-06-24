@@ -1,7 +1,7 @@
 #include <raylib.h>
 #include <rlgl.h>
 
-#include "defines.h"
+#include "globals.h"
 
 
 class sphere
