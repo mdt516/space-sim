@@ -50,26 +50,47 @@ int main()
 	SetTargetFPS(60);
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE);
 
-
 	sphere sun(SUN_RADIUS);
 	float sunRotation = 0;
-	float sunRotationRate = 360.0f / 24.5f;
 
 	sphere earth(EARTH_RADIUS);
 	float earthRotation = 0;
-	float earthRotationRate = 360.0f / 1.0f;
 	float earthOrbit = 0;
-	float earthOrbitRate = 360.0f / 365.0f;
 
 	sphere moon(MOON_RADIUS);
 	float moonRotation = 0;
-	float moonRotationRate = 360.0f / 27.3f;
 	float moonOrbit = 0;
-	float moonOrbitRate = 360.0f / 27.3f;
 
+	sphere mercury(MERCURY_RADIUS);
+	float mercuryRotation = 0;
+	float mercuryOrbit = 0;
+
+	sphere venus(VENUS_RADIUS);
+	float venusRotation = 0;
+	float venusOrbit = 0;
+
+	sphere mars(MARS_RADIUS);
+	float marsRotation = 0;
+	float marsOrbit = 0;
+
+	sphere jupiter(JUPITER_RADIUS);
+	float jupiterRotation = 0;
+	float jupiterOrbit = 0;
+
+	sphere saturn(SATURN_RADIUS);
+	float saturnRotation = 0;
+	float saturnOrbit = 0;
+
+	sphere uranus(URANUS_RADIUS);
+	float uranusRotation = 0;
+	float uranusOrbit = 0;
+
+	sphere neptune(NEPTUNE_RADIUS);
+	float neptuneRotation = 0;
+	float neptuneOrbvenus;
 
 	Camera3D cam3D;
-	cam3D.position = {EARTH_SUN_DISTANCE + 30, 100, 0};
+	cam3D.position = {SUN_EARTH_DISTANCE + 30, 200, 0};
 	cam3D.projection = CAMERA_PERSPECTIVE;
 	cam3D.fovy = 45.0f;
 	cam3D.up = {0, 1, 0};
@@ -77,12 +98,12 @@ int main()
 	// main loop
 	while (!WindowShouldClose())
 	{
-		sunRotation += sunRotationRate * GetFrameTime();
-		earthRotation += earthRotationRate * GetFrameTime();
-		moonRotation += moonRotationRate * GetFrameTime();
+		sunRotation += SUN_ROTATION_RATE * GetFrameTime();
+		earthRotation += EARTH_ROTATION_RATE * GetFrameTime();
+		moonRotation += MOON_ROTATION_RATE * GetFrameTime();
 
-		earthOrbit += earthOrbitRate * GetFrameTime();
-		moonOrbit += moonOrbitRate * GetFrameTime();
+		earthOrbit += EARTH_ORBIT_RATE * GetFrameTime();
+		moonOrbit += MOON_ORBIT_RATE * GetFrameTime();
 
 
 		BeginDrawing();
@@ -94,8 +115,10 @@ int main()
 
 		if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
 		{
-			cam3D.target = earth.getPosition();
+			cam3D.target = {0, 0, 0};
 		}
+
+
 
 		// transform and draw sun
 		rlPushMatrix();
@@ -104,10 +127,10 @@ int main()
 		rlPopMatrix();
 
 
-		// earth
+		#pragma region earth
 		rlPushMatrix();
 			rlRotatef(earthOrbit, 0, 1, 0);
-			rlTranslatef(EARTH_SUN_DISTANCE + earth.getRadius() + sun.getRadius(), 0, 0);
+			rlTranslatef(SUN_EARTH_DISTANCE + earth.getRadius() + sun.getRadius(), 0, 0);
 			rlRotatef(earthRotation, 0, 1, 0);
 
 			DrawSphere({0, 0, 0}, earth.getRadius(), BLUE);         // draw earth
@@ -123,6 +146,7 @@ int main()
 			rlPopMatrix();
 
 		rlPopMatrix();
+		#pragma endregion
 
 
 		EndMode3D();
