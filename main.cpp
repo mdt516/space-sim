@@ -130,7 +130,7 @@ int main()
 		#pragma region earth
 		rlPushMatrix();
 			rlRotatef(earthOrbit, 0, 1, 0);
-			rlTranslatef(SUN_EARTH_DISTANCE + earth.getRadius() + sun.getRadius(), 0, 0);
+			rlTranslatef(SUN_EARTH_DISTANCE + sun.getRadius()  + earth.getRadius(), 0, 0);
 			rlRotatef(earthRotation, 0, 1, 0);
 
 			DrawSphere({0, 0, 0}, earth.getRadius(), BLUE);         // draw earth
@@ -142,6 +142,7 @@ int main()
 				rlRotatef(moonRotation, 0, 1, 0);
 
 				DrawSphere({0, 0, 0}, moon.getRadius(), GRAY);       // draw moon
+			rlPopMatrix();
 
 			rlPopMatrix();
 
