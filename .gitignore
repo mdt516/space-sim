@@ -10,3 +10,11 @@
 /.vs/space-sim/CopilotIndices/18.7.1225.11805
 /space-sim.vcxproj.filters
 /.vs/space-sim/CopilotIndices/18.7.1244.59975
+/packages/Microsoft.Windows.CppWinRT.2.0.220531.1
+/space-sim/x64/Release/space-sim.tlog
+/space-sim/x64/Release
+/space-sim-test/vcpkg_installed
+/space-sim-test/x64/Debug/Generated Files/winrt
+/space-sim-test/x64/Debug/space-sim-test.tlog
+/space-sim-test/x64/Debug
+/x64/Release
