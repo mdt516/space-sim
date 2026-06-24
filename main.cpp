@@ -1,29 +1,23 @@
 #include <raylib.h>
 #include <rlgl.h>
 
-
-// window info
-const int SCREEN_WIDTH = 1920;
-const int SCREEN_HEIGHT = 1080;
-const char* TITLE = "space-sim";
-
-
-
-const float SUN_RADIUS = 109.0f;
-const float EARTH_RADIUS = 3.6f;
-const float MOON_RADIUS = 1.0f;
-
-const float EARTH_MOON_DISTANCE = 1.0f;
-const float EARTH_SUN_DISTANCE = 389.178f;
-
-const float GLOBAL_ROTATION_SPEED = 0.2f;
-
-
+#include "defines.h"
 
 
 class sphere
 {
 public:
+	sphere(float r) : radius(r), pos(0, 0, 0)
+	{
+		axes[0].position = pos;
+		axes[1].position = pos;
+		axes[2].position = pos;
+
+		axes[0].direction = {1, 0, 0};     // x-axis
+		axes[1].direction = {0, 1, 0};     // y-axis
+		axes[2].direction = {0, 0, 1};     // z-axis
+	}
+
 	sphere(float x, float y, float z, float r) : pos(x, y, z), radius(r)
 	{
 		axes[0].position = pos;
@@ -38,7 +32,7 @@ public:
 	Vector3 getPosition() const { return pos; }
 	float getRadius() const { return radius; }
 
-	void drawAxes()
+	void drawAxes() const
 	{
 		DrawRay(axes[0], GREEN);
 		DrawRay(axes[1], RED);
@@ -57,30 +51,28 @@ int main()
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE);
 
 
-	sphere sun(0, 0, 0, SUN_RADIUS);
+	sphere sun(SUN_RADIUS);
 	float sunRotation = 0;
 	float sunRotationRate = 360.0f / 24.5f;
 
-	sphere earth(0, 0, 0, EARTH_RADIUS);
+	sphere earth(EARTH_RADIUS);
 	float earthRotation = 0;
 	float earthRotationRate = 360.0f / 1.0f;
 	float earthOrbit = 0;
 	float earthOrbitRate = 360.0f / 365.0f;
 
-	sphere moon(0, 0, 0, MOON_RADIUS);
+	sphere moon(MOON_RADIUS);
 	float moonRotation = 0;
 	float moonRotationRate = 360.0f / 27.3f;
 	float moonOrbit = 0;
 	float moonOrbitRate = 360.0f / 27.3f;
 
 
-	Camera3D cam;
-	cam.position = {EARTH_SUN_DISTANCE, 100, 0};
-	cam.projection = CAMERA_PERSPECTIVE;
-	cam.fovy = 45.0f;
-	cam.up = {0, 1, 0};
-
-
+	Camera3D cam3D;
+	cam3D.position = {EARTH_SUN_DISTANCE + 30, 100, 0};
+	cam3D.projection = CAMERA_PERSPECTIVE;
+	cam3D.fovy = 45.0f;
+	cam3D.up = {0, 1, 0};
 
 	// main loop
 	while (!WindowShouldClose())
@@ -95,14 +87,14 @@ int main()
 
 		BeginDrawing();
 		ClearBackground(BLACK);
-		BeginMode3D(cam);
+		BeginMode3D(cam3D);
 
-		UpdateCamera(&cam, CAMERA_FREE);
-		//DrawGrid(500, 50);
+		UpdateCamera(&cam3D, CAMERA_FREE);
+		DrawGrid(500, 50);
 
 		if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
 		{
-			cam.target = earth.getPosition();
+			cam3D.target = earth.getPosition();
 		}
 
 		// transform and draw sun
@@ -115,7 +107,7 @@ int main()
 		// earth
 		rlPushMatrix();
 			rlRotatef(earthOrbit, 0, 1, 0);
-			rlTranslatef(EARTH_SUN_DISTANCE, 0, 0);
+			rlTranslatef(EARTH_SUN_DISTANCE + earth.getRadius() + sun.getRadius(), 0, 0);
 			rlRotatef(earthRotation, 0, 1, 0);
 
 			DrawSphere({0, 0, 0}, earth.getRadius(), BLUE);         // draw earth
@@ -123,7 +115,7 @@ int main()
 			// moon
 			rlPushMatrix();
 				rlRotatef(moonOrbit, 0, 1, 0);
-				rlTranslatef(EARTH_MOON_DISTANCE, 0, 0);
+				rlTranslatef(EARTH_MOON_DISTANCE + earth.getRadius() + moon.getRadius(), 0, 0);
 				rlRotatef(moonRotation, 0, 1, 0);
 
 				DrawSphere({0, 0, 0}, moon.getRadius(), GRAY);       // draw moon
