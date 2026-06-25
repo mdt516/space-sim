@@ -51,43 +51,44 @@ int main()
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE);
 
 	sphere sun(SUN_RADIUS);
-	float sunRotation = 0;
+	float sunRotationAngle = 0;
 
 	sphere earth(EARTH_RADIUS);
-	float earthRotation = 0;
-	float earthOrbit = 0;
+	float earthRotationAngle = 0;
+	float earthOrbitAngle = 0;
 
 	sphere moon(MOON_RADIUS);
-	float moonRotation = 0;
-	float moonOrbit = 0;
+	float moonRotationAngle = 0;
+	float moonOrbitAngle = 0;
 
 	sphere mercury(MERCURY_RADIUS);
-	float mercuryRotation = 0;
-	float mercuryOrbit = 0;
+	float mercuryRotationAngle = 0;
+	float mercuryOrbitAngle = 0;
 
 	sphere venus(VENUS_RADIUS);
-	float venusRotation = 0;
-	float venusOrbit = 0;
+	float venusRotationAngle = 0;
+	float venusOrbitAngle = 0;
 
 	sphere mars(MARS_RADIUS);
-	float marsRotation = 0;
-	float marsOrbit = 0;
+	float marsRotationAngle = 0;
+	float marsOrbitAngle = 0;
 
 	sphere jupiter(JUPITER_RADIUS);
-	float jupiterRotation = 0;
-	float jupiterOrbit = 0;
+	float jupiterRotationAngle = 0;
+	float jupiterOrbitAngle = 0;
 
 	sphere saturn(SATURN_RADIUS);
-	float saturnRotation = 0;
-	float saturnOrbit = 0;
+	float saturnRotationAngle = 0;
+	float saturnOrbitAngle = 0;
 
 	sphere uranus(URANUS_RADIUS);
-	float uranusRotation = 0;
-	float uranusOrbit = 0;
+	float uranusRotationAngle = 0;
+	float uranusOrbitAngle = 0;
 
 	sphere neptune(NEPTUNE_RADIUS);
-	float neptuneRotation = 0;
-	float neptuneOrbvenus;
+	float neptuneRotationAngle = 0;
+	float neptuneOrbitAngle = 0;
+	#pragma endregion
 
 	Camera3D cam3D;
 	cam3D.position = {SUN_EARTH_DISTANCE + 30, 200, 0};
@@ -98,12 +99,28 @@ int main()
 	// main loop
 	while (!WindowShouldClose())
 	{
-		sunRotation += SUN_ROTATION_RATE * GetFrameTime();
-		earthRotation += EARTH_ROTATION_RATE * GetFrameTime();
-		moonRotation += MOON_ROTATION_RATE * GetFrameTime();
+		// update rotations
+		sunRotationAngle += SUN_ROTATION_RATE * GetFrameTime() * SIMULATION_SPEED;
+		mercuryRotationAngle += MERCURY_ROTATION_RATE * GetFrameTime() * SIMULATION_SPEED;
+		venusRotationAngle += VENUS_ROTATION_RATE * GetFrameTime() * SIMULATION_SPEED;
+		earthRotationAngle += EARTH_ROTATION_RATE * GetFrameTime() * SIMULATION_SPEED;
+		moonRotationAngle += MOON_ROTATION_RATE * GetFrameTime() * SIMULATION_SPEED;
+		marsRotationAngle += MARS_ROTATION_RATE * GetFrameTime() * SIMULATION_SPEED;
+		jupiterRotationAngle += JUPITER_ROTATION_RATE * GetFrameTime() * SIMULATION_SPEED;
+		saturnRotationAngle += SATURN_ROTATION_RATE * GetFrameTime() * SIMULATION_SPEED;
+		uranusRotationAngle += URANUS_ROTATION_RATE * GetFrameTime() * SIMULATION_SPEED;
+		neptuneRotationAngle += NEPTUNE_ROTATION_RATE * GetFrameTime() * SIMULATION_SPEED;
 
-		earthOrbit += EARTH_ORBIT_RATE * GetFrameTime();
-		moonOrbit += MOON_ORBIT_RATE * GetFrameTime();
+		// update revolutions
+		mercuryOrbitAngle += MERCURY_ORBIT_RATE * GetFrameTime() * SIMULATION_SPEED;
+		venusOrbitAngle += VENUS_ORBIT_RATE * GetFrameTime() * SIMULATION_SPEED;
+		earthOrbitAngle += EARTH_ORBIT_RATE * GetFrameTime() * SIMULATION_SPEED;
+		moonOrbitAngle += MOON_ORBIT_RATE * GetFrameTime() * SIMULATION_SPEED;
+		marsOrbitAngle += MARS_ORBIT_RATE * GetFrameTime() * SIMULATION_SPEED;
+		jupiterOrbitAngle += JUPITER_ORBIT_RATE * GetFrameTime() * SIMULATION_SPEED;
+		saturnOrbitAngle += SATURN_ORBIT_RATE * GetFrameTime() * SIMULATION_SPEED;
+		uranusOrbitAngle += URANUS_ORBIT_RATE * GetFrameTime() * SIMULATION_SPEED;
+		neptuneOrbitAngle += NEPTUNE_ORBIT_RATE * GetFrameTime() * SIMULATION_SPEED;
 
 
 		BeginDrawing();
@@ -122,7 +139,7 @@ int main()
 
 		// transform and draw sun
 		rlPushMatrix();
-			rlRotatef(sunRotation, 0, 1, 0);
+			rlRotatef(sunRotationAngle, 0, 1, 0);
 			DrawSphere({0, 0, 0}, sun.getRadius(), ORANGE);
 		rlPopMatrix();
 
