@@ -3,6 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="space-sim-test/space-sim-test.vcxproj" Id="d422db89-21c4-4b74-8e7d-e587a5437c79" />
   <Project Path="space-sim.vcxproj" Id="cb2a48ee-3f3e-43b9-8e12-39dd471bc0c2" />
 </Solution>
