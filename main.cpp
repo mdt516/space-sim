@@ -49,7 +49,11 @@ int main()
 {
 	SetTargetFPS(60);
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE);
+	SetWindowState(FLAG_WINDOW_RESIZABLE);
 
+	rlSetClipPlanes(0.1, 10000000000);
+
+	#pragma region initSpheres
 	sphere sun(SUN_RADIUS);
 	float sunRotationAngle = 0;
 
@@ -91,7 +95,7 @@ int main()
 	#pragma endregion
 
 	Camera3D cam3D;
-	cam3D.position = {SUN_EARTH_DISTANCE + 30, 200, 0};
+	cam3D.position = {900, 900, 900};
 	cam3D.projection = CAMERA_PERSPECTIVE;
 	cam3D.fovy = 45.0f;
 	cam3D.up = {0, 1, 0};
@@ -144,25 +148,91 @@ int main()
 		rlPopMatrix();
 
 
+		#pragma region mercury
+		rlPushMatrix();
+			rlRotatef(mercuryOrbitAngle, 0, 1, 0);
+			rlTranslatef(SUN_MERCURY_DISTANCE + sun.getRadius() + mercury.getRadius(), 0, 0);
+			rlRotatef(mercuryRotationAngle, 0, 1, 0);
+			DrawSphere({0, 0, 0}, mercury.getRadius(), DARKGREEN);
+		rlPopMatrix();
+		#pragma endregion
+
+
+		#pragma region venus
+		rlPushMatrix();
+			rlRotatef(venusOrbitAngle, 0, 1, 0);
+			rlTranslatef(SUN_VENUS_DISTANCE + sun.getRadius() + venus.getRadius(), 0, 0);
+			rlRotatef(venusRotationAngle, 0, 1, 0);
+			DrawSphere({0, 0, 0}, venus.getRadius(), YELLOW);
+		rlPopMatrix();
+		#pragma endregion
+
+
 		#pragma region earth
 		rlPushMatrix();
-			rlRotatef(earthOrbit, 0, 1, 0);
-			rlTranslatef(SUN_EARTH_DISTANCE + sun.getRadius()  + earth.getRadius(), 0, 0);
-			rlRotatef(earthRotation, 0, 1, 0);
-
+			rlRotatef(earthOrbitAngle, 0, 1, 0);
+			rlTranslatef(SUN_EARTH_DISTANCE + sun.getRadius() + earth.getRadius(), 0, 0);
+			rlRotatef(earthRotationAngle, 0, 1, 0);
 			DrawSphere({0, 0, 0}, earth.getRadius(), BLUE);         // draw earth
 
 			// moon
 			rlPushMatrix();
-				rlRotatef(moonOrbit, 0, 1, 0);
+				rlRotatef(moonOrbitAngle, 0, 1, 0);
 				rlTranslatef(EARTH_MOON_DISTANCE + earth.getRadius() + moon.getRadius(), 0, 0);
-				rlRotatef(moonRotation, 0, 1, 0);
-
+				rlRotatef(moonRotationAngle, 0, 1, 0);
 				DrawSphere({0, 0, 0}, moon.getRadius(), GRAY);       // draw moon
 			rlPopMatrix();
 
-			rlPopMatrix();
+		rlPopMatrix();
+		#pragma endregion
 
+
+		#pragma region mars
+		rlPushMatrix();
+			rlRotatef(marsOrbitAngle, 0, 1, 0);
+			rlTranslatef(SUN_MARS_DISTANCE + sun.getRadius() + mars.getRadius(), 0, 0);
+			rlRotatef(marsRotationAngle, 0, 1, 0);
+			DrawSphere({0, 0, 0}, mars.getRadius(), RED);
+		rlPopMatrix();
+		#pragma endregion
+
+
+		#pragma region jupiter
+		rlPushMatrix();
+			rlRotatef(jupiterOrbitAngle, 0, 1, 0);
+			rlTranslatef(SUN_JUPITER_DISTANCE + sun.getRadius() + jupiter.getRadius(), 0, 0);
+			rlRotatef(jupiterRotationAngle, 0, 1, 0);
+			DrawSphere({0, 0, 0}, jupiter.getRadius(), BEIGE);
+		rlPopMatrix();
+		#pragma endregion
+
+
+		#pragma region saturn
+		rlPushMatrix();
+			rlRotatef(saturnOrbitAngle, 0, 1, 0);
+			rlTranslatef(SUN_SATURN_DISTANCE + sun.getRadius() + saturn.getRadius(), 0, 0);
+			rlRotatef(saturnRotationAngle, 0, 1, 0);
+			DrawSphere({0, 0, 0}, saturn.getRadius(), YELLOW);
+		rlPopMatrix();
+		#pragma endregion
+
+
+		#pragma region uranus
+		rlPushMatrix();
+			rlRotatef(uranusOrbitAngle, 0, 1, 0);
+			rlTranslatef(SUN_URANUS_DISTANCE + sun.getRadius() + uranus.getRadius(), 0, 0);
+			rlRotatef(uranusRotationAngle, 0, 1, 0);
+			DrawSphere({0, 0, 0}, uranus.getRadius(), SKYBLUE);
+		rlPopMatrix();
+		#pragma endregion
+
+
+		#pragma region neptune
+		rlPushMatrix();
+			rlRotatef(neptuneOrbitAngle, 0, 1, 0);
+			rlTranslatef(SUN_NEPTUNE_DISTANCE + sun.getRadius() + neptune.getRadius(), 0, 0);
+			rlRotatef(neptuneRotationAngle, 0, 1, 0);
+			DrawSphere({0, 0, 0}, neptune.getRadius(), SKYBLUE);
 		rlPopMatrix();
 		#pragma endregion
 
