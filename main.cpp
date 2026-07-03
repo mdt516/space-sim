@@ -1,6 +1,9 @@
 #include <raylib.h>
 #include <rlgl.h>
 
+#include <cmath>
+#include <iostream>
+
 #include "globals.h"
 
 
@@ -32,6 +35,16 @@ public:
 	Vector3 getPosition() const { return pos; }
 	float getRadius() const { return radius; }
 
+	void setPosition(float x, float y)
+	{
+		pos = {x, y, pos.z};
+	}
+
+	void setPosition(float x, float y, float z)
+	{
+		pos = {x, y, z};
+	}
+
 	void drawAxes() const
 	{
 		DrawRay(axes[0], GREEN);
@@ -45,13 +58,22 @@ private:
 	Ray axes[3];
 };
 
+// used to track the position of the camera
+struct localCam3DStats
+{
+	Vector3 movement = {0, 0, 0};
+	Vector3 orientation = {0, 0, 0};
+};
+
 int main()
 {
+	bool debugOverlay = false;
+
 	SetTargetFPS(60);
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE);
 	SetWindowState(FLAG_WINDOW_RESIZABLE);
 
-	rlSetClipPlanes(0.1, 10000000000);
+	rlSetClipPlanes(0.1, 10000000000000000000);
 
 	#pragma region initSpheres
 	sphere sun(SUN_RADIUS);
@@ -99,6 +121,7 @@ int main()
 	cam3D.projection = CAMERA_PERSPECTIVE;
 	cam3D.fovy = 45.0f;
 	cam3D.up = {0, 1, 0};
+	localCam3DStats camStats;
 
 	// main loop
 	while (!WindowShouldClose())
@@ -126,20 +149,103 @@ int main()
 		uranusOrbitAngle += URANUS_ORBIT_RATE * GetFrameTime() * SIMULATION_SPEED;
 		neptuneOrbitAngle += NEPTUNE_ORBIT_RATE * GetFrameTime() * SIMULATION_SPEED;
 
+		sun.setPosition(cos(sunRotationAngle), sin(sunRotationAngle));
+		mercury.setPosition(mercuryRotationAngle * cos(mercuryOrbitAngle), mercuryRotationAngle * sin(mercuryOrbitAngle));
 
 		BeginDrawing();
 		ClearBackground(BLACK);
+
 		BeginMode3D(cam3D);
 
-		UpdateCamera(&cam3D, CAMERA_FREE);
+		//UpdateCamera(&cam3D, CAMERA_FREE); // TODO make custom camera
 		DrawGrid(500, 50);
 
-		if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+		#pragma region inputs
+		// mouse
+
+		// left click
+		if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
 		{
-			cam3D.target = {0, 0, 0};
+			Vector2 mouseDelta = GetMouseDelta();
+			std::cout << "mouse delta x: " << mouseDelta.x << ", mouse delta y: " << mouseDelta.y << std::endl;
+
+			if (mouseDelta.x > 0)
+			{
+				camStats.orientation.x += MOUSE_SENSITIVITY;
+			}
+			else if (mouseDelta.x < 0)
+			{
+				camStats.orientation.x -= MOUSE_SENSITIVITY;
+			}
+			else if (mouseDelta.x == 0)
+			{
+				camStats.orientation.x = 0;
+			}
+
+			if (mouseDelta.y > 0)
+			{
+				camStats.orientation.y += MOUSE_SENSITIVITY;
+			}
+			else if (mouseDelta.y < 0)
+			{
+				camStats.orientation.y -= MOUSE_SENSITIVITY;
+			}
+			else if (mouseDelta.y == 0)
+			{
+				camStats.orientation.y = 0;
+			}
 		}
 
+		// right click
+		if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON) && !debugOverlay)
+		{
+			debugOverlay = true;
+			std::cout << "right click" << std::endl;
+		}
+		else if(IsMouseButtonPressed(MOUSE_RIGHT_BUTTON) && debugOverlay)
+		{
+			debugOverlay = false;
+			std::cout << "right click" << std::endl;
+		}
 
+		// keys
+		if (IsKeyDown(KEY_W))
+		{
+			camStats.movement = {CAMERA_MOVE_SPEED, 0, 0};
+			std::cout << "W pressed" << std::endl;
+		}
+		else if (IsKeyDown(KEY_A))
+		{
+			camStats.movement = {0, -CAMERA_MOVE_SPEED, 0};
+			std::cout << "A pressed" << std::endl;
+		}
+		else if (IsKeyDown(KEY_S))
+		{
+			camStats.movement = {-CAMERA_MOVE_SPEED, 0, 0};
+			std::cout << "S pressed" << std::endl;
+		}
+		else if (IsKeyDown(KEY_D))
+		{
+			camStats.movement = {0, CAMERA_MOVE_SPEED, 0};
+			std::cout << "D pressed" << std::endl;
+		}
+		else if (IsKeyDown(KEY_SPACE))
+		{
+			camStats.movement = {0, 0, CAMERA_MOVE_SPEED};
+			std::cout << "space pressed" << std::endl;
+		}
+		else if (IsKeyDown(KEY_LEFT_SHIFT))
+		{
+			camStats.movement = {0, 0, -CAMERA_MOVE_SPEED};
+			std::cout << "left shift pressed" << std::endl;
+		}
+		else
+		{
+			camStats.movement = {0, 0, 0};
+		}
+
+		UpdateCameraPro(&cam3D, camStats.movement, camStats.orientation, 0);
+		#pragma endregion
 
 		// transform and draw sun
 		rlPushMatrix();
@@ -238,6 +344,12 @@ int main()
 
 
 		EndMode3D();
+
+		if (debugOverlay) // TODO finish debug overlay on right click
+		{
+			DrawText(TextFormat("FOV: %f", cam3D.fovy), 50, 50, 30, RED);
+		}
+
 		EndDrawing();
 	}
 

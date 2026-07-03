@@ -5,14 +5,20 @@ const int SCREEN_WIDTH = 1920;
 const int SCREEN_HEIGHT = 1080;
 const char* TITLE = "space-sim";
 
-const float SIMULATION_SPEED = 40.0f;
+// controls
+const float CAMERA_MOVE_SPEED = 50.0f;
+const float MOUSE_SENSITIVITY = 0.05f;
 
-const float DISTANCE_DOWNSCALE_FACTOR = 20000;
-const float PLANET_SCALE_FACTOR = 0.125;
-const float SUN_DOWNSCALE_FACTOR = 1000;
+// simulation settings
+const float SIMULATION_SPEED = 1.0f;
+
+const float DISTANCE_DOWNSCALE_FACTOR = 1000;
+const float PLANET_SCALE_FACTOR = 1;
+const float SUN_SCALE_FACTOR = 0.005;
+
 
 // radii in km
-const float SUN_RADIUS = 695700.0f           /        SUN_DOWNSCALE_FACTOR;
+const float SUN_RADIUS = 695700.0f           *        SUN_SCALE_FACTOR;
 const float MERCURY_RADIUS = 2439.7f         *        PLANET_SCALE_FACTOR;
 const float VENUS_RADIUS = 6051.8f           *        PLANET_SCALE_FACTOR;
 const float EARTH_RADIUS = 6378.0f           *        PLANET_SCALE_FACTOR;
