@@ -1,6 +1,7 @@
 #include <raylib.h>
 #include <rlgl.h>
 
+#include <deque>
 #include <cmath>
 #include <iostream>
 
@@ -35,7 +36,7 @@ public:
 	Vector3 getPosition() const { return pos; }
 	float getRadius() const { return radius; }
 
-	void setPosition(float x, float y)
+	void setPosition(float x, float z)
 	{
 		pos = {x, y, pos.z};
 	}
@@ -82,38 +83,47 @@ int main()
 	sphere earth(EARTH_RADIUS);
 	float earthRotationAngle = 0;
 	float earthOrbitAngle = 0;
+	std::deque<Vector3> earthPath;
 
 	sphere moon(MOON_RADIUS);
 	float moonRotationAngle = 0;
 	float moonOrbitAngle = 0;
+	std::deque<Vector3> moonPath;
 
 	sphere mercury(MERCURY_RADIUS);
 	float mercuryRotationAngle = 0;
 	float mercuryOrbitAngle = 0;
+	std::deque<Vector3> mercuryPath;
 
 	sphere venus(VENUS_RADIUS);
 	float venusRotationAngle = 0;
 	float venusOrbitAngle = 0;
+	std::deque<Vector3> venusPath;
 
 	sphere mars(MARS_RADIUS);
 	float marsRotationAngle = 0;
 	float marsOrbitAngle = 0;
+	std::deque<Vector3> marsPath;
 
 	sphere jupiter(JUPITER_RADIUS);
 	float jupiterRotationAngle = 0;
 	float jupiterOrbitAngle = 0;
+	std::deque<Vector3> jupiterPath;
 
 	sphere saturn(SATURN_RADIUS);
 	float saturnRotationAngle = 0;
 	float saturnOrbitAngle = 0;
+	std::deque<Vector3> saturnPath;
 
 	sphere uranus(URANUS_RADIUS);
 	float uranusRotationAngle = 0;
 	float uranusOrbitAngle = 0;
+	std::deque<Vector3> uranusPath;
 
 	sphere neptune(NEPTUNE_RADIUS);
 	float neptuneRotationAngle = 0;
 	float neptuneOrbitAngle = 0;
+	std::deque<Vector3> neptunePath;
 	#pragma endregion
 
 	Camera3D cam3D;
@@ -123,9 +133,12 @@ int main()
 	cam3D.up = {0, 1, 0};
 	localCam3DStats camStats;
 
+	int mouseWheelMod = 0;
+
 	// main loop
 	while (!WindowShouldClose())
 	{
+		#pragma region updates
 		// update rotations
 		sunRotationAngle += SUN_ROTATION_RATE * GetFrameTime() * SIMULATION_SPEED;
 		mercuryRotationAngle += MERCURY_ROTATION_RATE * GetFrameTime() * SIMULATION_SPEED;
@@ -149,16 +162,46 @@ int main()
 		uranusOrbitAngle += URANUS_ORBIT_RATE * GetFrameTime() * SIMULATION_SPEED;
 		neptuneOrbitAngle += NEPTUNE_ORBIT_RATE * GetFrameTime() * SIMULATION_SPEED;
 
+		// TODO finish updating position info for debug overlay
 		sun.setPosition(cos(sunRotationAngle), sin(sunRotationAngle));
-		mercury.setPosition(mercuryRotationAngle * cos(mercuryOrbitAngle), mercuryRotationAngle * sin(mercuryOrbitAngle));
+		float mercuryDist = SUN_MERCURY_DISTANCE + sun.getRadius() + mercury.getRadius();
+		mercury.setPosition(mercuryDist * cos(mercuryOrbitAngle), mercuryDist * sin(mercuryOrbitAngle));
+		venus.setPosition(venusRotationAngle * cos(venusOrbitAngle), venusRotationAngle * sin(venusOrbitAngle));
+		earth.setPosition(earthRotationAngle * cos(earthOrbitAngle), earthRotationAngle * sin(earthOrbitAngle));
+		moon.setPosition(moonRotationAngle * cos(moonOrbitAngle), moonRotationAngle * sin(moonOrbitAngle));
+		mars.setPosition(marsRotationAngle * cos(marsOrbitAngle), marsRotationAngle * sin(marsOrbitAngle));
+		jupiter.setPosition(jupiterRotationAngle * cos(jupiterOrbitAngle), jupiterRotationAngle * sin(jupiterOrbitAngle));
+		saturn.setPosition(saturnRotationAngle * cos(saturnOrbitAngle), saturnRotationAngle * sin(saturnOrbitAngle));
+		uranus.setPosition(uranusRotationAngle * cos(uranusOrbitAngle), uranusRotationAngle * sin(uranusOrbitAngle));
+		neptune.setPosition(neptuneRotationAngle * cos(neptuneOrbitAngle), neptuneRotationAngle * sin(neptuneOrbitAngle));
+
+		// update orbit paths for bodies, to be drawn later
+		if(mercuryPath.size() < ORBIT_PATH_SIZE)
+			mercuryPath.push_back(mercury.getPosition());
+		if (venusPath.size() < ORBIT_PATH_SIZE)
+			venusPath.push_back(venus.getPosition());
+		if (earthPath.size() < ORBIT_PATH_SIZE)
+			earthPath.push_back(earth.getPosition());
+		if (moonPath.size() < ORBIT_PATH_SIZE)
+			moonPath.push_back(moon.getPosition());
+		if (marsPath.size() < ORBIT_PATH_SIZE)
+			marsPath.push_back(mars.getPosition());
+		if (jupiterPath.size() < ORBIT_PATH_SIZE)
+			jupiterPath.push_back(jupiter.getPosition());
+		if (saturnPath.size() < ORBIT_PATH_SIZE)
+			saturnPath.push_back(saturn.getPosition());
+		if (uranusPath.size() < ORBIT_PATH_SIZE)
+			uranusPath.push_back(uranus.getPosition());
+		if (neptunePath.size() < ORBIT_PATH_SIZE)
+			neptunePath.push_back(neptune.getPosition());
+		#pragma endregion
 
 		BeginDrawing();
 		ClearBackground(BLACK);
 
 		BeginMode3D(cam3D);
 
-		//UpdateCamera(&cam3D, CAMERA_FREE); // TODO make custom camera
-		DrawGrid(500, 50);
+		//DrawGrid(5000, 500);
 
 		#pragma region inputs
 		// mouse
@@ -195,6 +238,12 @@ int main()
 				camStats.orientation.y = 0;
 			}
 		}
+		else
+		{
+			camStats.orientation.x = 0;
+			camStats.orientation.y = 0;
+			camStats.orientation.z = 0;
+		}
 
 		// right click
 		if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON) && !debugOverlay)
@@ -208,35 +257,43 @@ int main()
 			std::cout << "right click" << std::endl;
 		}
 
+		// mouse wheel
+		if (GetMouseWheelMoveV().y != 0)
+		{
+			std::cout << "wheel y: " << GetMouseWheelMoveV().y << std::endl;
+			mouseWheelMod += GetMouseWheelMoveV().y * SPEED_MODIFIER;
+			std::cout << "wheelmod: " << mouseWheelMod << std::endl;
+		}
+
 		// keys
 		if (IsKeyDown(KEY_W))
 		{
-			camStats.movement = {CAMERA_MOVE_SPEED, 0, 0};
+			camStats.movement = {CAMERA_MOVE_SPEED * mouseWheelMod, 0, 0};
 			std::cout << "W pressed" << std::endl;
 		}
 		else if (IsKeyDown(KEY_A))
 		{
-			camStats.movement = {0, -CAMERA_MOVE_SPEED, 0};
+			camStats.movement = {0, -(CAMERA_MOVE_SPEED * mouseWheelMod), 0};
 			std::cout << "A pressed" << std::endl;
 		}
 		else if (IsKeyDown(KEY_S))
 		{
-			camStats.movement = {-CAMERA_MOVE_SPEED, 0, 0};
+			camStats.movement = {-(CAMERA_MOVE_SPEED * mouseWheelMod), 0, 0};
 			std::cout << "S pressed" << std::endl;
 		}
 		else if (IsKeyDown(KEY_D))
 		{
-			camStats.movement = {0, CAMERA_MOVE_SPEED, 0};
+			camStats.movement = {0, CAMERA_MOVE_SPEED * mouseWheelMod, 0};
 			std::cout << "D pressed" << std::endl;
 		}
 		else if (IsKeyDown(KEY_SPACE))
 		{
-			camStats.movement = {0, 0, CAMERA_MOVE_SPEED};
+			camStats.movement = {0, 0, CAMERA_MOVE_SPEED * mouseWheelMod};
 			std::cout << "space pressed" << std::endl;
 		}
 		else if (IsKeyDown(KEY_LEFT_SHIFT))
 		{
-			camStats.movement = {0, 0, -CAMERA_MOVE_SPEED};
+			camStats.movement = {0, 0, -(CAMERA_MOVE_SPEED * mouseWheelMod)};
 			std::cout << "left shift pressed" << std::endl;
 		}
 		else
@@ -287,6 +344,7 @@ int main()
 				rlTranslatef(EARTH_MOON_DISTANCE + earth.getRadius() + moon.getRadius(), 0, 0);
 				rlRotatef(moonRotationAngle, 0, 1, 0);
 				DrawSphere({0, 0, 0}, moon.getRadius(), GRAY);       // draw moon
+				DrawPoint3D({0, 0, 0}, WHITE);
 			rlPopMatrix();
 
 		rlPopMatrix();
@@ -343,11 +401,20 @@ int main()
 		#pragma endregion
 
 
+		#pragma region orbitPaths
+		for (int i = 1; i < mercuryPath.size(); i++)
+		{
+			DrawSphere(mercuryPath[i], ORBIT_PATH_THICKNESS, WHITE);
+		}
+		#pragma endregion
+
+
+
 		EndMode3D();
 
 		if (debugOverlay) // TODO finish debug overlay on right click
 		{
-			DrawText(TextFormat("FOV: %f", cam3D.fovy), 50, 50, 30, RED);
+			DrawText(TextFormat("Mercury x: %f", mercury.getPosition().x), 50, 50, 30, RED);
 		}
 
 		EndDrawing();

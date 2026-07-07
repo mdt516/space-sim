@@ -6,11 +6,14 @@ const int SCREEN_HEIGHT = 1080;
 const char* TITLE = "space-sim";
 
 // controls
-const float CAMERA_MOVE_SPEED = 50.0f;
+const float CAMERA_MOVE_SPEED = 10.0f;
 const float MOUSE_SENSITIVITY = 0.05f;
+const float SPEED_MODIFIER = 10.0f;
 
 // simulation settings
 const float SIMULATION_SPEED = 1.0f;
+const int ORBIT_PATH_SIZE = 3000;
+const float ORBIT_PATH_THICKNESS = 800.0f;
 
 const float DISTANCE_DOWNSCALE_FACTOR = 1000;
 const float PLANET_SCALE_FACTOR = 1;
