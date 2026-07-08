@@ -38,7 +38,7 @@ public:
 
 	void setPosition(float x, float z)
 	{
-		pos = {x, y, pos.z};
+		pos = {x, pos.y, z};
 	}
 
 	void setPosition(float x, float y, float z)
@@ -164,36 +164,64 @@ int main()
 
 		// TODO finish updating position info for debug overlay
 		sun.setPosition(cos(sunRotationAngle), sin(sunRotationAngle));
+
 		float mercuryDist = SUN_MERCURY_DISTANCE + sun.getRadius() + mercury.getRadius();
 		mercury.setPosition(mercuryDist * cos(mercuryOrbitAngle), mercuryDist * sin(mercuryOrbitAngle));
-		venus.setPosition(venusRotationAngle * cos(venusOrbitAngle), venusRotationAngle * sin(venusOrbitAngle));
-		earth.setPosition(earthRotationAngle * cos(earthOrbitAngle), earthRotationAngle * sin(earthOrbitAngle));
-		moon.setPosition(moonRotationAngle * cos(moonOrbitAngle), moonRotationAngle * sin(moonOrbitAngle));
-		mars.setPosition(marsRotationAngle * cos(marsOrbitAngle), marsRotationAngle * sin(marsOrbitAngle));
-		jupiter.setPosition(jupiterRotationAngle * cos(jupiterOrbitAngle), jupiterRotationAngle * sin(jupiterOrbitAngle));
-		saturn.setPosition(saturnRotationAngle * cos(saturnOrbitAngle), saturnRotationAngle * sin(saturnOrbitAngle));
-		uranus.setPosition(uranusRotationAngle * cos(uranusOrbitAngle), uranusRotationAngle * sin(uranusOrbitAngle));
-		neptune.setPosition(neptuneRotationAngle * cos(neptuneOrbitAngle), neptuneRotationAngle * sin(neptuneOrbitAngle));
+
+		float venusDist = SUN_VENUS_DISTANCE + sun.getRadius() + venus.getRadius();
+		venus.setPosition(venusDist * cos(venusOrbitAngle), venusDist * sin(venusOrbitAngle));
+
+		float earthDist = SUN_EARTH_DISTANCE + sun.getRadius() + earth.getRadius();
+		earth.setPosition(earthDist * cos(earthOrbitAngle), earthDist * sin(earthOrbitAngle));
+
+		float moonDist = 0;
+		moon.setPosition(moonDist * cos(moonOrbitAngle), moonDist * sin(moonOrbitAngle));
+
+		float marsDist = SUN_MARS_DISTANCE + sun.getRadius() + mars.getRadius();
+		mars.setPosition(marsDist * cos(marsOrbitAngle), marsDist * sin(marsOrbitAngle));
+
+		float jupiterDist = SUN_JUPITER_DISTANCE + sun.getRadius() + jupiter.getRadius();
+		jupiter.setPosition(jupiterDist * cos(jupiterOrbitAngle), jupiterDist * sin(jupiterOrbitAngle));
+
+		float saturnDist = SUN_SATURN_DISTANCE + sun.getRadius() + saturn.getRadius();
+		saturn.setPosition(saturnDist * cos(saturnOrbitAngle), saturnDist * sin(saturnOrbitAngle));
+
+		float uranusDist = SUN_URANUS_DISTANCE + sun.getRadius() + uranus.getRadius();
+		uranus.setPosition(uranusDist * cos(uranusOrbitAngle), uranusDist * sin(uranusOrbitAngle));
+
+		float neptuneDist = SUN_NEPTUNE_DISTANCE + sun.getRadius() + neptune.getRadius();
+		neptune.setPosition(neptuneDist * cos(neptuneOrbitAngle), neptuneDist * sin(neptuneOrbitAngle));
 
 		// update orbit paths for bodies, to be drawn later
-		if(mercuryPath.size() < ORBIT_PATH_SIZE)
-			mercuryPath.push_back(mercury.getPosition());
+		mercuryPath.push_back(mercury.getPosition());
+		venusPath.push_back(venus.getPosition());
+		earthPath.push_back(earth.getPosition());
+		moonPath.push_back(moon.getPosition());
+		marsPath.push_back(mars.getPosition());
+		jupiterPath.push_back(jupiter.getPosition());
+		saturnPath.push_back(saturn.getPosition());
+		uranusPath.push_back(uranus.getPosition());
+		neptunePath.push_back(neptune.getPosition());
+
+		// remove excess from dequeues
+		if (mercuryPath.size() < ORBIT_PATH_SIZE)
+			mercuryPath.pop_back();
 		if (venusPath.size() < ORBIT_PATH_SIZE)
-			venusPath.push_back(venus.getPosition());
+			venusPath.pop_back();
 		if (earthPath.size() < ORBIT_PATH_SIZE)
-			earthPath.push_back(earth.getPosition());
+			earthPath.pop_back();
 		if (moonPath.size() < ORBIT_PATH_SIZE)
-			moonPath.push_back(moon.getPosition());
+			moonPath.pop_back();
 		if (marsPath.size() < ORBIT_PATH_SIZE)
-			marsPath.push_back(mars.getPosition());
+			marsPath.pop_back();
 		if (jupiterPath.size() < ORBIT_PATH_SIZE)
-			jupiterPath.push_back(jupiter.getPosition());
+			jupiterPath.pop_back();
 		if (saturnPath.size() < ORBIT_PATH_SIZE)
-			saturnPath.push_back(saturn.getPosition());
+			saturnPath.pop_back();
 		if (uranusPath.size() < ORBIT_PATH_SIZE)
-			uranusPath.push_back(uranus.getPosition());
+			uranusPath.pop_back();
 		if (neptunePath.size() < ORBIT_PATH_SIZE)
-			neptunePath.push_back(neptune.getPosition());
+			neptunePath.pop_back();
 		#pragma endregion
 
 		BeginDrawing();
