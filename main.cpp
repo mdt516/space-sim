@@ -69,6 +69,7 @@ struct localCam3DStats
 int main()
 {
 	bool debugOverlay = false;
+	int mouseWheelMod = 0;
 
 	SetTargetFPS(60);
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, TITLE);
@@ -133,7 +134,6 @@ int main()
 	cam3D.up = {0, 1, 0};
 	localCam3DStats camStats;
 
-	int mouseWheelMod = 0;
 
 	// main loop
 	while (!WindowShouldClose())
@@ -162,7 +162,7 @@ int main()
 		uranusOrbitAngle += URANUS_ORBIT_RATE * GetFrameTime() * SIMULATION_SPEED;
 		neptuneOrbitAngle += NEPTUNE_ORBIT_RATE * GetFrameTime() * SIMULATION_SPEED;
 
-		// TODO finish updating position info for debug overlay
+		// info for debug overlay and orbit paths
 		sun.setPosition(cos(sunRotationAngle), sin(sunRotationAngle));
 
 		float mercuryDist = SUN_MERCURY_DISTANCE + sun.getRadius() + mercury.getRadius();
@@ -174,7 +174,7 @@ int main()
 		float earthDist = SUN_EARTH_DISTANCE + sun.getRadius() + earth.getRadius();
 		earth.setPosition(earthDist * cos(earthOrbitAngle), earthDist * sin(earthOrbitAngle));
 
-		float moonDist = 0;
+		float moonDist = 0; // TODO fix this to be correct
 		moon.setPosition(moonDist * cos(moonOrbitAngle), moonDist * sin(moonOrbitAngle));
 
 		float marsDist = SUN_MARS_DISTANCE + sun.getRadius() + mars.getRadius();
@@ -204,23 +204,23 @@ int main()
 		neptunePath.push_back(neptune.getPosition());
 
 		// remove excess from dequeues
-		if (mercuryPath.size() < ORBIT_PATH_SIZE)
+		if (mercuryPath.size() >= ORBIT_PATH_SIZE)
 			mercuryPath.pop_back();
-		if (venusPath.size() < ORBIT_PATH_SIZE)
+		if (venusPath.size() >= ORBIT_PATH_SIZE)
 			venusPath.pop_back();
-		if (earthPath.size() < ORBIT_PATH_SIZE)
+		if (earthPath.size() >= ORBIT_PATH_SIZE)
 			earthPath.pop_back();
-		if (moonPath.size() < ORBIT_PATH_SIZE)
+		if (moonPath.size() >= ORBIT_PATH_SIZE)
 			moonPath.pop_back();
-		if (marsPath.size() < ORBIT_PATH_SIZE)
+		if (marsPath.size() >= ORBIT_PATH_SIZE)
 			marsPath.pop_back();
-		if (jupiterPath.size() < ORBIT_PATH_SIZE)
+		if (jupiterPath.size() >= ORBIT_PATH_SIZE)
 			jupiterPath.pop_back();
-		if (saturnPath.size() < ORBIT_PATH_SIZE)
+		if (saturnPath.size() >= ORBIT_PATH_SIZE)
 			saturnPath.pop_back();
-		if (uranusPath.size() < ORBIT_PATH_SIZE)
+		if (uranusPath.size() >= ORBIT_PATH_SIZE)
 			uranusPath.pop_back();
-		if (neptunePath.size() < ORBIT_PATH_SIZE)
+		if (neptunePath.size() >= ORBIT_PATH_SIZE)
 			neptunePath.pop_back();
 		#pragma endregion
 
@@ -430,9 +430,38 @@ int main()
 
 
 		#pragma region orbitPaths
-		for (int i = 1; i < mercuryPath.size(); i++)
+		for (int i = 0; i < mercuryPath.size(); i++)
 		{
-			DrawSphere(mercuryPath[i], ORBIT_PATH_THICKNESS, WHITE);
+			DrawSphere(mercuryPath[i], ORBIT_PATH_THICKNESS, DARKGREEN);
+		}
+		for (int i = 0; i < venusPath.size(); i++)
+		{
+			DrawSphere(venusPath[i], ORBIT_PATH_THICKNESS, YELLOW);
+		}
+		for (int i = 0; i < earthPath.size(); i++)
+		{
+			DrawSphere(earthPath[i], ORBIT_PATH_THICKNESS, BLUE);
+		}
+		// TODO add moon
+		for (int i = 0; i < marsPath.size(); i++)
+		{
+			DrawSphere(marsPath[i], ORBIT_PATH_THICKNESS, RED);
+		}
+		for (int i = 0; i < jupiterPath.size(); i++)
+		{
+			DrawSphere(jupiterPath[i], ORBIT_PATH_THICKNESS, BEIGE);
+		}
+		for (int i = 0; i < saturnPath.size(); i++)
+		{
+			DrawSphere(saturnPath[i], ORBIT_PATH_THICKNESS, YELLOW);
+		}
+		for (int i = 0; i < uranusPath.size(); i++)
+		{
+			DrawSphere(uranusPath[i], ORBIT_PATH_THICKNESS, SKYBLUE);
+		}
+		for (int i = 0; i < neptunePath.size(); i++)
+		{
+			DrawSphere(neptunePath[i], ORBIT_PATH_THICKNESS, PURPLE);
 		}
 		#pragma endregion
 

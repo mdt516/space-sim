@@ -7,17 +7,17 @@ const char* TITLE = "space-sim";
 
 // controls
 const float CAMERA_MOVE_SPEED = 10.0f;
-const float MOUSE_SENSITIVITY = 0.05f;
-const float SPEED_MODIFIER = 10.0f;
+const float MOUSE_SENSITIVITY = 1.0f;
+const float SPEED_MODIFIER = 100.0f;
 
 // simulation settings
 const float SIMULATION_SPEED = 1.0f;
-const int ORBIT_PATH_SIZE = 3000;
-const float ORBIT_PATH_THICKNESS = 800.0f;
+const int ORBIT_PATH_SIZE = 300;
+const float ORBIT_PATH_THICKNESS = 2000.0f;
 
-const float DISTANCE_DOWNSCALE_FACTOR = 1000;
-const float PLANET_SCALE_FACTOR = 1;
-const float SUN_SCALE_FACTOR = 0.005;
+const float DISTANCE_DOWNSCALE_FACTOR = 10;
+const float PLANET_SCALE_FACTOR = 100;
+const float SUN_SCALE_FACTOR = 10;
 
 
 // radii in km
