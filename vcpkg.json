@@ -1,5 +1,7 @@
 {
   "dependencies": [
-    "raylib"
+    "cpr",
+    "raylib",
+    "doctest"
   ]
 }

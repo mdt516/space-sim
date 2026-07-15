@@ -6,58 +6,8 @@
 #include <iostream>
 
 #include "globals.h"
-
-
-class sphere
-{
-public:
-	sphere(float r) : radius(r), pos(0, 0, 0)
-	{
-		axes[0].position = pos;
-		axes[1].position = pos;
-		axes[2].position = pos;
-
-		axes[0].direction = {1, 0, 0};     // x-axis
-		axes[1].direction = {0, 1, 0};     // y-axis
-		axes[2].direction = {0, 0, 1};     // z-axis
-	}
-
-	sphere(float x, float y, float z, float r) : pos(x, y, z), radius(r)
-	{
-		axes[0].position = pos;
-		axes[1].position = pos;
-		axes[2].position = pos;
-
-		axes[0].direction = {1, 0, 0};     // x-axis
-		axes[1].direction = {0, 1, 0};     // y-axis
-		axes[2].direction = {0, 0, 1};     // z-axis
-	}
-
-	Vector3 getPosition() const { return pos; }
-	float getRadius() const { return radius; }
-
-	void setPosition(float x, float z)
-	{
-		pos = {x, pos.y, z};
-	}
-
-	void setPosition(float x, float y, float z)
-	{
-		pos = {x, y, z};
-	}
-
-	void drawAxes() const
-	{
-		DrawRay(axes[0], GREEN);
-		DrawRay(axes[1], RED);
-		DrawRay(axes[2], BLUE);
-	}
-
-private:
-	Vector3 pos;
-	float radius = 0;
-	Ray axes[3];
-};
+#include "fetch.h"
+#include "sphere.h"
 
 // used to track the position of the camera
 struct localCam3DStats
@@ -76,6 +26,8 @@ int main()
 	SetWindowState(FLAG_WINDOW_RESIZABLE);
 
 	rlSetClipPlanes(0.1, 100000000000);
+
+	auto r = handleData("499");
 
 	#pragma region initSpheres
 	sphere sun(SUN_RADIUS);
@@ -205,23 +157,23 @@ int main()
 
 		// remove excess from dequeues
 		if (mercuryPath.size() >= ORBIT_PATH_SEGMENTS)
-			mercuryPath.pop_back();
+			mercuryPath.pop_front();
 		if (venusPath.size() >= ORBIT_PATH_SEGMENTS)
-			venusPath.pop_back();
+			venusPath.pop_front();
 		if (earthPath.size() >= ORBIT_PATH_SEGMENTS)
-			earthPath.pop_back();
+			earthPath.pop_front();
 		if (moonPath.size() >= ORBIT_PATH_SEGMENTS)
-			moonPath.pop_back();
+			moonPath.pop_front();
 		if (marsPath.size() >= ORBIT_PATH_SEGMENTS)
-			marsPath.pop_back();
+			marsPath.pop_front();
 		if (jupiterPath.size() >= ORBIT_PATH_SEGMENTS)
-			jupiterPath.pop_back();
+			jupiterPath.pop_front();
 		if (saturnPath.size() >= ORBIT_PATH_SEGMENTS)
-			saturnPath.pop_back();
+			saturnPath.pop_front();
 		if (uranusPath.size() >= ORBIT_PATH_SEGMENTS)
-			uranusPath.pop_back();
+			uranusPath.pop_front();
 		if (neptunePath.size() >= ORBIT_PATH_SEGMENTS)
-			neptunePath.pop_back();
+			neptunePath.pop_front();
 		#pragma endregion
 
 		BeginDrawing();

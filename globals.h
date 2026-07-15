@@ -12,7 +12,7 @@ const float SPEED_MODIFIER = 100.0f;
 
 // simulation settings
 const float SIMULATION_SPEED = 1.0f;
-const int ORBIT_PATH_SEGMENTS = 100;
+const int ORBIT_PATH_SEGMENTS = 100000;
 
 const float DISTANCE_DOWNSCALE_FACTOR = 10;
 const float PLANET_SCALE_FACTOR = 100;
